@@ -100,7 +100,7 @@ function buildSummary(result: {
   return firstUsefulLine(result.cleanStderr) || firstUsefulLine(result.cleanStdout) || `命令执行失败，${exitLabel}。`;
 }
 
-export function commandResponse(result: {
+export function commandPayload(result: {
   code: number | null;
   signal: NodeJS.Signals | null;
   stdout: string;
@@ -119,12 +119,22 @@ export function commandResponse(result: {
     qrImagePath,
   });
 
-  return NextResponse.json({
+  return {
     success: result.code === 0,
     ...result,
     summary,
     cleanStdout,
     cleanStderr,
     qrImagePath,
-  });
+  };
+}
+
+export function commandResponse(result: {
+  code: number | null;
+  signal: NodeJS.Signals | null;
+  stdout: string;
+  stderr: string;
+  durationMs: number;
+}) {
+  return NextResponse.json(commandPayload(result));
 }

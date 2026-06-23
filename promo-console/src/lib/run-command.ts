@@ -11,15 +11,17 @@ export type CommandResult = {
 export function runCommand(
   command: string,
   args: string[],
-  options: { cwd?: string; timeoutMs?: number } = {},
+  options: { cwd?: string; timeoutMs?: number; env?: NodeJS.ProcessEnv } = {},
 ): Promise<CommandResult> {
   const startedAt = Date.now();
 
   return new Promise((resolve) => {
     const child = spawn(command, args, {
       cwd: options.cwd,
-      env: process.env,
+      env: options.env || process.env,
       shell: false,
+      detached: true,
+      stdio: ["ignore", "pipe", "pipe"],
     });
 
     let stdout = "";
@@ -34,7 +36,15 @@ export function runCommand(
 
     const timer = options.timeoutMs
       ? setTimeout(() => {
-          child.kill("SIGTERM");
+          if (child.pid) {
+            try {
+              process.kill(-child.pid, "SIGTERM");
+            } catch {
+              child.kill("SIGTERM");
+            }
+          } else {
+            child.kill("SIGTERM");
+          }
           finish({
             code: null,
             signal: "SIGTERM",

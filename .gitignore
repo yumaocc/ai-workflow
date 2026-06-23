@@ -15,6 +15,7 @@ dist/
 # env and local config
 .env
 .env.*
+.gateway.env
 !.env.example
 !.env.development
 !.env.production
@@ -32,6 +33,7 @@ cookies/
 cookiesFile/
 uploadFile/
 videoFile/
+garden-gpt-image-2/
 *.pem
 
 # nested repo metadata kept only on this machine
