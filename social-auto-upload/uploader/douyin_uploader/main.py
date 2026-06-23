@@ -22,6 +22,8 @@ from utils.log import douyin_logger
 
 DOUYIN_PUBLISH_STRATEGY_IMMEDIATE = "immediate"
 DOUYIN_PUBLISH_STRATEGY_SCHEDULED = "scheduled"
+DOUYIN_FORM_READY_TIMEOUT_MS = int(os.getenv("DOUYIN_FORM_READY_TIMEOUT_MS", "300000"))
+DOUYIN_SCHEDULE_READY_TIMEOUT_MS = int(os.getenv("DOUYIN_SCHEDULE_READY_TIMEOUT_MS", "300000"))
 
 
 def _msg(emoji: str, text: str) -> str:
@@ -261,12 +263,15 @@ class DouYinBaseUploader(BaseVideoUploader):
 
     async def set_schedule_time_douyin(self, page, publish_date):
         label_element = page.locator("[class^='radio']:has-text('定时发布')")
+        await label_element.wait_for(state="visible", timeout=DOUYIN_SCHEDULE_READY_TIMEOUT_MS)
         await label_element.click()
         await asyncio.sleep(1)
         publish_date_hour = publish_date.strftime("%Y-%m-%d %H:%M")
 
         await asyncio.sleep(1)
-        await page.locator('.semi-input[placeholder="日期和时间"]').click()
+        schedule_input = page.locator('.semi-input[placeholder="日期和时间"]').first
+        await schedule_input.wait_for(state="visible", timeout=DOUYIN_SCHEDULE_READY_TIMEOUT_MS)
+        await schedule_input.click()
         await page.keyboard.press("Control+KeyA")
         await page.keyboard.type(str(publish_date_hour))
         await page.keyboard.press("Enter")
@@ -274,13 +279,13 @@ class DouYinBaseUploader(BaseVideoUploader):
 
     async def fill_title_and_description(self, page: Page, title: str, description: str, tags: list[str] | None = None):
         # 2026-06 抖音发布页 DOM：标题=input[placeholder*=填写作品标题]，描述=div.zone-container[contenteditable]
-        # version_2(post/video) 发布页要等视频上传完才渲染表单（实测约 40s），故等待超时给到 120s
+        # version_2(post/video) 发布页要等上传和表单异步渲染完成，等待时间需给足。
         title_input = page.locator('input[placeholder*="填写作品标题"]').first
-        await title_input.wait_for(state="visible", timeout=120000)
+        await title_input.wait_for(state="visible", timeout=DOUYIN_FORM_READY_TIMEOUT_MS)
         await title_input.fill(title[:30])
 
         description_editor = page.locator('div.zone-container[contenteditable="true"]').first
-        await description_editor.wait_for(state="visible", timeout=120000)
+        await description_editor.wait_for(state="visible", timeout=DOUYIN_FORM_READY_TIMEOUT_MS)
         await description_editor.click()
         await page.keyboard.press("Control+KeyA")
         await page.keyboard.press("Delete")

@@ -34,6 +34,7 @@ cookiesFile/
 uploadFile/
 videoFile/
 garden-gpt-image-2/
+video-variants/
 *.pem
 
 # nested repo metadata kept only on this machine

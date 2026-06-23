@@ -462,6 +462,121 @@ a {
   line-height: 1.4;
 }
 
+.variant-template-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.variant-template {
+  display: grid;
+  gap: 7px;
+  min-height: 132px;
+  padding: 12px;
+  border: 1px solid var(--app-line);
+  border-radius: 8px;
+  color: #334155;
+  background: #f8fafc;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.variant-template:hover,
+.variant-template--active {
+  border-color: rgba(37, 99, 235, 0.4);
+  background: #eff6ff;
+  box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.12);
+}
+
+.variant-template strong {
+  color: #111827;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.variant-template span {
+  color: #475569;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.variant-template code,
+.variant-runtime code {
+  overflow-wrap: anywhere;
+  color: #1d4ed8;
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.variant-runtime {
+  display: grid;
+  gap: 10px;
+}
+
+.variant-runtime > div {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--app-line);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.variant-runtime span,
+.variant-task-meta {
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.variant-runtime strong {
+  color: #111827;
+  font-size: 14px;
+}
+
+.variant-task-list {
+  display: grid;
+  gap: 10px;
+  max-height: 560px;
+  overflow: auto;
+}
+
+.variant-task {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--app-line);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.variant-task-main,
+.variant-task-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.variant-task-main strong {
+  min-width: 0;
+  color: #111827;
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.variant-task p {
+  margin: 0;
+  color: #475569;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
 .log-header {
   width: 100%;
   display: flex;
@@ -645,7 +760,8 @@ a {
   }
 
   .content-grid,
-  .field-grid {
+  .field-grid,
+  .variant-template-grid {
     grid-template-columns: 1fr;
   }
 
